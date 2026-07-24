@@ -1,0 +1,5 @@
+CREATE SEQUENCE seq_students
+    START WITH 9
+    INCREMENT BY 1
+    NOCACHE
+    NOCYCLE;
