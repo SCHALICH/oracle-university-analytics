@@ -530,37 +530,21 @@ PROMPT
 PROMPT 11. JSON EXECUTIVE REPORT
 PROMPT ============================================================
 
-SELECT JSON_SERIALIZE
-(
-    JSON_OBJECT
-    (
+SELECT
+    JSON_OBJECT(
         'reportName' VALUE 'Oracle University Analytics',
         'generatedAt' VALUE TO_CHAR(
             SYSTIMESTAMP,
             'YYYY-MM-DD"T"HH24:MI:SS'
         ),
-        'totalDepartments' VALUE (
-            SELECT COUNT(*) FROM departments
-        ),
-        'totalCourses' VALUE (
-            SELECT COUNT(*) FROM courses
-        ),
-        'totalStudents' VALUE (
-            SELECT COUNT(*) FROM students
-        ),
-        'totalEnrollments' VALUE (
-            SELECT COUNT(*) FROM enrollments
-        ),
-        'averageScore' VALUE (
-            SELECT ROUND(AVG(score), 2) FROM grades
-        )
+        'totalDepartments' VALUE (SELECT COUNT(*) FROM departments),
+        'totalCourses' VALUE (SELECT COUNT(*) FROM courses),
+        'totalStudents' VALUE (SELECT COUNT(*) FROM students),
+        'totalEnrollments' VALUE (SELECT COUNT(*) FROM enrollments),
+        'averageScore' VALUE (SELECT ROUND(AVG(score),2) FROM grades)
         RETURNING CLOB
-    )
-    PRETTY
-    RETURNING CLOB
-) AS report_json
+    ) AS report_json
 FROM dual;
-
 
 -- ============================================================
 -- 12. XML EXECUTIVE REPORT
