@@ -1,120 +1,79 @@
 # Oracle University Analytics
 
-Oracle AI Database 26ai üzerinde geliştirilen üniversite bilgi yönetimi ve öğrenci analitiği projesi.
+Oracle AI Database 26ai üzerinde geliştirilen üniversite bilgi yönetimi,
+akademik raporlama ve öğrenci başarı analitiği projesidir.
 
-## Proje Amacı
+## Kapsam
 
-Bu proje; öğrenciler, bölümler, dersler, öğretim üyeleri, dönemler, kayıtlar, sınavlar ve notlar arasındaki ilişkileri Oracle Database üzerinde modellemek için hazırlanmıştır.
+- Üniversite, fakülte, bölüm, öğrenci ve öğretim üyesi yönetimi
+- Ders, dönem, ders açılışı, kayıt, sınav ve not modeli
+- Oracle SQL ve PL/SQL örnekleri
+- Analitik fonksiyonlar, CTE, alt sorgular ve küme operatörleri
+- `MERGE`, `PIVOT`/`UNPIVOT`, JSON, XML ve materialized view örnekleri
+- Yönetici raporları
+- Python ve Random Forest ile not tahmini
+- SH Sample Schema ile satış tahmini ve zaman serisi analizi
 
-Proje kapsamında:
-
-- İlişkisel veritabanı tasarımı
-- SQL sorguları
-- PL/SQL geliştirme
-- View, sequence ve index kullanımı
-- Veri analizi
-- Python ile Oracle bağlantısı
-- Öğrenci başarı ve risk analizi
-- Makine öğrenmesi uygulamaları
-
-gerçekleştirilecektir.
-
-## Kullanılan Teknolojiler
+## Teknolojiler
 
 - Oracle AI Database 26ai Free
-- SQL
+- SQL*Plus veya SQLcl
 - PL/SQL
-- SQLcl
-- DBeaver
-- VS Code
-- Python
-- Pandas
-- Scikit-learn
-- Matplotlib
-- Git ve GitHub
+- Python 3.11+
+- Pandas ve scikit-learn
 
-## Proje Yapısı
+## Proje yapısı
 
 ```text
 oracle-university-analytics/
-├── database/
-├── plsql/
-├── analytics/
-├── python/
-├── datasets/
-├── docs/
+├── database/                              # DDL, örnek veri ve SQL raporları
+├── docs/                                  # Tasarım dokümanları
+├── oracle-university-python-analytics/    # Python modelleme çalışması
+├── sh-sales-analytics/                    # SH satış/ML analitiği
+├── analytics/                             # Analiz çıktıları için ayrılmış alan
+├── datasets/                              # Dışa aktarılan veri kümeleri
+├── plsql/                                 # Ek PL/SQL çalışmaları
 ├── README.md
-├── LICENSE
-└── .gitignore
-'''bash
-cat README.md
-cat > docs/database-design.md <<'EOF'
-# Database Design
+└── LICENSE
+```
 
-## Amaç
+Genel ilerleme planı ve doğrulama durumu için [ROADMAP.md](ROADMAP.md)
+belgesine bakın.
 
-Bu veritabanı, bir üniversitenin akademik yapısını ve öğrenci süreçlerini yönetmek için tasarlanmıştır.
+## Veritabanı modeli
 
-## Ana Varlıklar
+```text
+UNIVERSITIES
+    └── FACULTIES
+        └── DEPARTMENTS
+            ├── STUDENTS
+            ├── INSTRUCTORS
+            └── COURSES
+                └── COURSE_OFFERINGS
+                    ├── ENROLLMENTS
+                    │   └── GRADES
+                    └── EXAMS
+```
 
-### FACULTIES
-Üniversitedeki fakülteleri tutar.
+## Kurulum ve çalıştırma
 
-### DEPARTMENTS
-Fakültelere bağlı bölümleri tutar.
+Yeni veya boş bir Oracle şemasında tek komutla kurulum:
 
-### STUDENTS
-Öğrencilerin temel bilgilerini tutar.
+```sql
+@database/00_install.sql
+```
 
-### INSTRUCTORS
-Öğretim üyelerinin bilgilerini tutar.
+`database/11_cursors.sql` ile `database/25_final_reporting.sql` arasındaki
+dosyalar bağımsız öğrenme ve raporlama örnekleridir. Bazıları yardımcı nesne
+oluşturduğu için dosya numarası sırasıyla çalıştırılması önerilir.
 
-### COURSES
-Derslerin tanımlarını ve kredi bilgilerini tutar.
+Python modelini çalıştırmadan önce
+`oracle-university-python-analytics/README.md` içindeki ortam değişkenlerini
+ayarlayın.
 
-### SEMESTERS
-Akademik dönemleri tutar.
+## Notlar
 
-### COURSE_OFFERINGS
-Bir dersin belirli bir dönemde hangi öğretim üyesi tarafından açıldığını tutar.
-
-### ENROLLMENTS
-Öğrencilerin açılan derslere kayıtlarını tutar.
-
-### EXAMS
-Derslere ait sınavları tutar.
-
-### GRADES
-Öğrencilerin sınav sonuçlarını tutar.
-
-## Temel İlişkiler
-
-- Bir fakültenin birden fazla bölümü olabilir.
-- Bir bölümün birden fazla öğrencisi olabilir.
-- Bir bölümün birden fazla öğretim üyesi olabilir.
-- Bir bölümün birden fazla dersi olabilir.
-- Bir ders farklı dönemlerde birden fazla kez açılabilir.
-- Bir öğrenci birden fazla derse kayıt olabilir.
-- Bir ders açılışında birden fazla öğrenci bulunabilir.
-- Bir ders açılışının birden fazla sınavı olabilir.
-- Bir öğrencinin her sınav için bir notu olabilir.
-
-## İlişki Özeti
-
-FACULTIES
-  |
-  └── DEPARTMENTS
-        ├── STUDENTS
-        ├── INSTRUCTORS
-        └── COURSES
-
-COURSES
-  |
-  └── COURSE_OFFERINGS
-        ├── ENROLLMENTS
-        └── EXAMS
-
-STUDENTS
-  |
-  └── ENROLLMENTS
-        └── GRADES
+- `01_create_tables_backup.sql`, ilk şema taslağını tarihsel referans olarak
+  korur ve kurulum sırasında çalıştırılmaz.
+- Model dosyaları yeniden üretilebilir çıktılardır; kaynak kodun yerine
+  geçmezler.

@@ -1,1 +1,12 @@
 *_backup.sql
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+oracle-university-python-analytics/models/*.joblib
+oracle-university-python-analytics/models/*_metrics.json
+sh-sales-analytics/.venv/
+sh-sales-analytics/datasets/*.csv
+sh-sales-analytics/outputs/*
+!sh-sales-analytics/outputs/README.md
