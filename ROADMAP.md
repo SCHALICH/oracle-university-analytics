@@ -43,8 +43,9 @@ dışa aktarımıyla modeller yeniden çalıştırılmıştır. Ayrıntılı kay
 ## Kalan geliştirme işleri
 
 1. DBeaver/SQLcl ekran görüntülerini raporlara yerleştirmek.
-2. Oracle 19c'nin ayrı kurulum/VM konumunu tespit edip salt-okunur envanterlemek.
+2. Kullanıcı onayından sonra iki kayıt dışı VM adayından hangisinin Oracle 19c
+   içerdiğini başlatıp salt-okunur SQL kontrolleriyle kesinleştirmek.
 
-Kritik yolun ilk adımı gerçek SH CSV dışa aktarımıdır. Depodaki
-`sh-sales-analytics/sql/01_monthly_sales_dataset.sql` ve
-`02_data_quality_checks.sql` bu işlem için hazırdır.
+Oracle 19c adaylarına ilişkin mevcut güvenli bulgular
+`docs/oracle-19c-inventory.md` belgesindedir. FREEPDB1 üzerindeki resmî SH
+kurulumu, gerçek CSV dışa aktarımı ve model doğrulaması tamamlanmıştır.
