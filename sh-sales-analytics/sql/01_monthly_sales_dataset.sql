@@ -3,11 +3,11 @@ SET FEEDBACK OFF
 SET HEADING ON
 SET SQLFORMAT CSV
 
-SPOOL datasets/sh_monthly_sales.csv
+SPOOL &1
 
 WITH monthly_sales AS (
     SELECT
-        TRUNC(t.calendar_date, 'MM') AS month_start,
+        TRUNC(t.time_id, 'MM') AS month_start,
         t.calendar_year,
         t.calendar_month_number,
         p.prod_category AS product_category,
@@ -28,7 +28,7 @@ WITH monthly_sales AS (
     JOIN sh.channels ch
         ON ch.channel_id = s.channel_id
     GROUP BY
-        TRUNC(t.calendar_date, 'MM'),
+        TRUNC(t.time_id, 'MM'),
         t.calendar_year,
         t.calendar_month_number,
         p.prod_category,
@@ -55,4 +55,4 @@ SPOOL OFF
 SET SQLFORMAT ANSICONSOLE
 SET FEEDBACK ON
 
-PROMPT Dataset exported to datasets/sh_monthly_sales.csv
+PROMPT Dataset exported successfully.

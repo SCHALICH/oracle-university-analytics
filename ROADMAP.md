@@ -35,12 +35,15 @@ hazırlama ve model hattı depoya eklenmiştir. Sonuçlar
 `docs/sh-official-data-results.md` belgesinde ve
 `sh-sales-analytics/outputs` klasöründedir.
 
+Oracle AI Database 26ai `FREEPDB1` içine resmî SH şeması ayrıca kurulmuş,
+918.843 satış satırı ve tüm temel nesneler doğrulanmıştır. Canlı veritabanı
+dışa aktarımıyla modeller yeniden çalıştırılmıştır. Ayrıntılı kayıt:
+`docs/sh-freepdb1-installation-report.md`.
+
 ## Kalan geliştirme işleri
 
-1. Sanal makinedeki listener yeniden erişilebilir olduğunda yerel SH CSV'sini
-   dışa aktarıp resmî kaynak sonuçlarıyla karşılaştırmak.
-2. DBeaver/SQLcl ekran görüntülerini raporlara yerleştirmek.
-3. Son değişiklikleri sanal makinedeki Git çalışma kopyasına aktarmak ve commit etmek.
+1. DBeaver/SQLcl ekran görüntülerini raporlara yerleştirmek.
+2. Oracle 19c'nin ayrı kurulum/VM konumunu tespit edip salt-okunur envanterlemek.
 
 Kritik yolun ilk adımı gerçek SH CSV dışa aktarımıdır. Depodaki
 `sh-sales-analytics/sql/01_monthly_sales_dataset.sql` ve

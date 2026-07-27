@@ -18,9 +18,9 @@ SELECT 'PROMOTIONS', COUNT(*) FROM sh.promotions;
 PROMPT === SALES DATE RANGE ===
 
 SELECT
-    MIN(t.calendar_date) AS first_sale_date,
-    MAX(t.calendar_date) AS last_sale_date,
-    COUNT(DISTINCT TRUNC(t.calendar_date, 'MM')) AS covered_months
+    MIN(t.time_id) AS first_sale_date,
+    MAX(t.time_id) AS last_sale_date,
+    COUNT(DISTINCT TRUNC(t.time_id, 'MM')) AS covered_months
 FROM sh.sales s
 JOIN sh.times t
     ON t.time_id = s.time_id;
