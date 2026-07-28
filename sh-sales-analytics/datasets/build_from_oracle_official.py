@@ -7,7 +7,6 @@ from pathlib import Path
 
 import pandas as pd
 
-
 OUTPUT_PATH = Path(__file__).resolve().parent / "sh_monthly_sales.csv"
 
 
@@ -21,6 +20,7 @@ def build_dataset(source: Path, output: Path = OUTPUT_PATH) -> pd.DataFrame:
         "AMOUNT_SOLD",
     }
     monthly_parts: list[pd.DataFrame] = []
+    customer_parts: list[pd.DataFrame] = []
 
     for chunk in pd.read_csv(source, chunksize=100_000):
         chunk.columns = [column.strip().upper() for column in chunk.columns]
@@ -55,21 +55,36 @@ def build_dataset(source: Path, output: Path = OUTPUT_PATH) -> pd.DataFrame:
             .agg(
                 TOTAL_QUANTITY=("QUANTITY_SOLD", "sum"),
                 TOTAL_AMOUNT=("AMOUNT_SOLD", "sum"),
-                CUSTOMER_COUNT=("CUST_ID", "nunique"),
                 TRANSACTION_COUNT=("CUST_ID", "size"),
             )
         )
         monthly_parts.append(grouped)
+        customer_parts.append(
+            chunk[
+                ["MONTH_START", "PROD_ID", "CHANNEL_ID", "CUST_ID"]
+            ].drop_duplicates()
+        )
 
-    dataset = (
+    totals = (
         pd.concat(monthly_parts, ignore_index=True)
         .groupby(["MONTH_START", "PROD_ID", "CHANNEL_ID"], as_index=False)
         .agg(
             TOTAL_QUANTITY=("TOTAL_QUANTITY", "sum"),
             TOTAL_AMOUNT=("TOTAL_AMOUNT", "sum"),
-            CUSTOMER_COUNT=("CUSTOMER_COUNT", "sum"),
             TRANSACTION_COUNT=("TRANSACTION_COUNT", "sum"),
         )
+    )
+    customers = (
+        pd.concat(customer_parts, ignore_index=True)
+        .drop_duplicates()
+        .groupby(["MONTH_START", "PROD_ID", "CHANNEL_ID"], as_index=False)
+        .agg(CUSTOMER_COUNT=("CUST_ID", "nunique"))
+    )
+    dataset = totals.merge(
+        customers,
+        on=["MONTH_START", "PROD_ID", "CHANNEL_ID"],
+        how="left",
+        validate="one_to_one",
     )
     dataset["CALENDAR_YEAR"] = dataset["MONTH_START"].dt.year
     dataset["CALENDAR_MONTH_NUMBER"] = dataset["MONTH_START"].dt.month

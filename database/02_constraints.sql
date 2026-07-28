@@ -1,0 +1,2 @@
+-- Kısıtlar database/01_create_tables.sql içinde tablolarla birlikte tanımlanır.
+-- Bu dosya eski numaralandırmayı bozmamak için açıklama dosyası olarak korunur.

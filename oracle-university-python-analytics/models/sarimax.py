@@ -5,15 +5,12 @@ from pathlib import Path
 
 import joblib
 import pandas as pd
-
+from config.database import get_connection
 from sklearn.metrics import (
     mean_absolute_error,
     mean_squared_error,
 )
 from statsmodels.tsa.statespace.sarimax import SARIMAX
-
-from config.database import get_connection
-
 
 warnings.filterwarnings("ignore")
 
@@ -249,9 +246,9 @@ def train_sarimax(
     )
 
     metrics = {
-        "total_periods": int(len(series)),
-        "train_periods": int(len(train_series)),
-        "test_periods": int(len(test_series)),
+        "total_periods": len(series),
+        "train_periods": len(train_series),
+        "test_periods": len(test_series),
         "forecast_periods": int(forecast_periods),
         "mae": float(mae),
         "mse": float(mse),

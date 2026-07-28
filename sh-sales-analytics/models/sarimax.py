@@ -68,7 +68,7 @@ def train_sarimax(
 
     summary = {
         "model": "SARIMAX",
-        "observed_months": int(len(series)),
+        "observed_months": len(series),
         "test_months": int(test_months),
         "forecast_months": int(forecast_months),
         "order": [1, 1, 1],

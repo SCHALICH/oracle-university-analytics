@@ -30,11 +30,8 @@ oracle-university-analytics/
 ├── docs/                                  # Tasarım dokümanları
 ├── oracle-university-python-analytics/    # Python modelleme çalışması
 ├── sh-sales-analytics/                    # SH satış/ML analitiği
-├── analytics/                             # Analiz çıktıları için ayrılmış alan
-├── datasets/                              # Dışa aktarılan veri kümeleri
-├── plsql/                                 # Ek PL/SQL çalışmaları
 ├── README.md
-└── LICENSE
+└── ROADMAP.md
 ```
 
 Genel ilerleme planı ve doğrulama durumu için [ROADMAP.md](ROADMAP.md)
@@ -73,7 +70,5 @@ ayarlayın.
 
 ## Notlar
 
-- `01_create_tables_backup.sql`, ilk şema taslağını tarihsel referans olarak
-  korur ve kurulum sırasında çalıştırılmaz.
 - Model dosyaları yeniden üretilebilir çıktılardır; kaynak kodun yerine
   geçmezler.

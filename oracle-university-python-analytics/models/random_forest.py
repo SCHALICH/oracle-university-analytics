@@ -1,17 +1,16 @@
-import math
-import joblib
 import json
+import math
 from pathlib import Path
 
+import joblib
 import pandas as pd
+from config.database import get_connection
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
-
-from config.database import get_connection
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 MODEL_DIR = PROJECT_ROOT / "models"
@@ -215,9 +214,9 @@ def train_model():
     r2 = r2_score(y_test, predictions)
 
     metrics_data = {
-        "total_records": int(len(x)),
-        "train_records": int(len(x_train)),
-        "test_records": int(len(x_test)),
+        "total_records": len(x),
+        "train_records": len(x_train),
+        "test_records": len(x_test),
         "mae": float(mae),
         "mse": float(mse),
         "rmse": float(rmse),

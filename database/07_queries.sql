@@ -1,0 +1,2 @@
+-- Temel görünüm database/05_views.sql içinde, ileri seviye sorgular ise
+-- database/11_cursors.sql ile database/25_final_reporting.sql arasındadır.

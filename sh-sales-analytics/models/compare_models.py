@@ -48,13 +48,17 @@ def main() -> None:
         "",
         comparison.to_markdown(index=False, floatfmt=".2f"),
         "",
-        "Modeller farklı toplulaştırma seviyelerini tahmin ettiği için MAE ve "
-        "RMSE değerleri doğrudan bir kazanan seçmek amacıyla karşılaştırılamaz. "
-        "Her model kendi hedef seviyesinde değerlendirilmelidir.",
+        (
+            "Modeller farklı toplulaştırma seviyelerini tahmin ettiği için MAE ve "
+            "RMSE değerleri doğrudan bir kazanan seçmek amacıyla karşılaştırılamaz. "
+            "Her model kendi hedef seviyesinde değerlendirilmelidir."
+        ),
         "",
-        "Random Forest kategori, kanal ve işlem özelliklerinin doğrusal olmayan "
-        "etkilerini açıklamak için; SARIMAX ise toplam satış trendi, mevsimsellik "
-        "ve ileri dönem tahmini için değerlendirilmelidir.",
+        (
+            "Random Forest kategori, kanal ve işlem özelliklerinin doğrusal olmayan "
+            "etkilerini açıklamak için; SARIMAX ise toplam satış trendi, mevsimsellik "
+            "ve ileri dönem tahmini için değerlendirilmelidir."
+        ),
     ]
     (OUTPUT_DIR / "model_comparison.md").write_text(
         "\n".join(report),

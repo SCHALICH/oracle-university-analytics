@@ -1,0 +1,2 @@
+-- Aktif öğrenci sequence'i database/06_sequences.sql içinde oluşturulur.
+-- Bu dosya eski numaralandırmayı bozmamak için açıklama dosyası olarak korunur.

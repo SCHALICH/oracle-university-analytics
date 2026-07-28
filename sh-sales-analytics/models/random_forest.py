@@ -109,8 +109,8 @@ def train_random_forest(
 
     summary = {
         "model": "Random Forest",
-        "train_rows": int(len(train)),
-        "test_rows": int(len(test)),
+        "train_rows": len(train),
+        "test_rows": len(test),
         "test_months": int(test_months),
         **metrics,
     }

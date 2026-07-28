@@ -9,7 +9,6 @@ import joblib
 import matplotlib.pyplot as plt
 import pandas as pd
 
-
 MODEL_DIR = Path(__file__).resolve().parent
 OUTPUT_DIR = MODEL_DIR / "outputs"
 
@@ -95,12 +94,7 @@ def export_summary(importance: pd.DataFrame, forecast: pd.DataFrame) -> None:
         for row in importance.head(10).itertuples()
     )
     forecast_rows = "\n".join(
-        "| {:%Y-%m} | {:.2f} | {:.2f}–{:.2f} |".format(
-            row.GRADE_MONTH,
-            row.FORECAST_SCORE,
-            row.LOWER_BOUND,
-            row.UPPER_BOUND,
-        )
+        f"| {row.GRADE_MONTH:%Y-%m} | {row.FORECAST_SCORE:.2f} | {row.LOWER_BOUND:.2f}–{row.UPPER_BOUND:.2f} |"
         for row in forecast.itertuples()
     )
     report = f"""# Gerçek Model Sonuçları
