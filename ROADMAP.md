@@ -40,12 +40,13 @@ Oracle AI Database 26ai `FREEPDB1` içine resmî SH şeması ayrıca kurulmuş,
 dışa aktarımıyla modeller yeniden çalıştırılmıştır. Ayrıntılı kayıt:
 `docs/sh-freepdb1-installation-report.md`.
 
-## Kalan geliştirme işleri
+## Son durum
 
-1. DBeaver/SQLcl ekran görüntülerini raporlara yerleştirmek.
-2. Kullanıcı onayından sonra iki kayıt dışı VM adayından hangisinin Oracle 19c
-   içerdiğini başlatıp salt-okunur SQL kontrolleriyle kesinleştirmek.
+- FREEPDB1 ve SH için canlı SQL*Plus doğrulama kanıtı alındı.
+- Eski VM'ler kullanıcı açıklamasıyla envanterlendi; proje için yetkili çalışma
+  ortamının ana `oracle` VM içindeki `cem` hesabı olduğu kesinleşti.
+- FREEPDB1 açılış durumu `SAVE STATE` ile kaydedildi.
+- Resmî SH kurulumu, gerçek CSV dışa aktarımı, modeller, rapor, sunum ve teslim
+  paketi tamamlandı.
 
-Oracle 19c adaylarına ilişkin mevcut güvenli bulgular
-`docs/oracle-19c-inventory.md` belgesindedir. FREEPDB1 üzerindeki resmî SH
-kurulumu, gerçek CSV dışa aktarımı ve model doğrulaması tamamlanmıştır.
+Yeni bir kapsam eklenmedikçe yol haritasındaki zorunlu iş kalmamıştır.

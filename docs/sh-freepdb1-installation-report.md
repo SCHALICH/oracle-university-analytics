@@ -113,3 +113,16 @@ python -m models.compare_models
 
 Modeller farklı hedef seviyelerinde çalıştığı için mutlak MAE/RMSE değerleri
 bir kazanan seçmek amacıyla doğrudan karşılaştırılmamalıdır.
+
+## 28 Temmuz 2026 canlı yeniden doğrulama
+
+Ana `oracle` VM yeniden başlatıldıktan sonra:
+
+- CDB `FREE`: `READ WRITE`, `PRIMARY`
+- PDB `FREEPDB1`: `READ WRITE`, kısıtlı değil
+- SH hesabı: `OPEN`, tablespace `USERS`
+- Geçerli SH nesnesi: 210
+- `SH.SALES`: 918.843 satır
+- `FREEPDB1` açılış durumu: `SAVE STATE`, `OPEN`
+
+Kanıt ekranı: `docs/evidence/freepdb1-sh-validation.png`.

@@ -15,26 +15,22 @@ Kontrol tarihi: 27 Temmuz 2026
 
 Parolalar incelenmedi, gösterilmedi veya dışa aktarılmadı.
 
-## Host üzerinde bulunan 19c adayları
+## Host üzerinde bulunan eski VM'ler
 
 | Aday | Sanal disk | Yaklaşık boyut | Durum |
 |---|---|---:|---|
-| `oracle-db` | `C:\Users\USER\VirtualBox VMs\oracle-db\oracle-db.vdi` | 20,5 GB | VirtualBox'a kayıtlı değil |
-| `Oracle_DB` | `C:\Users\USER\VirtualBox VMs\Oracle_DB\Oracle_DB.vdi` | 6,86 GB | VirtualBox'a kayıtlı değil |
+| `oracle-db` | `C:\Users\USER\VirtualBox VMs\oracle-db\oracle-db.vdi` | 20,5 GB | Kayıtlı; eski/ikincil ortam |
+| `Oracle_DB` | `C:\Users\USER\VirtualBox VMs\Oracle_DB\Oracle_DB.vdi` | 6,86 GB | Kayıtlı; yarım kalmış ortam |
 
-Bu iki klasörün `.vbox` yapılandırmaları Oracle Linux türünü gösterir. Ancak
-VM'ler başlatılmadan içlerindeki Oracle sürümü, CDB/PDB adları ve SH şemasının
-konumu kesin olarak doğrulanamaz.
+İki VM de kullanıcı onayıyla kaydedilip yalnızca açılış düzeyinde incelendi.
+`Oracle_DB` Oracle Linux 9.3 ile açıldı. Kullanıcı, esas çalışmaların ana
+`oracle` VM içindeki `cem` hesabında olduğunu; eski ortamlardan birinin boş veya
+önemsiz, diğerindeki kurulumun ise yetersiz disk alanı nedeniyle yarım kaldığını
+doğruladı.
 
 ## Güvenli sonraki adım
 
-Aday VM'lerden birini VirtualBox'a kaydetmek ve başlatmak sanal disk üzerinde
-açılış günlükleri oluşturabileceği için kullanıcı onayı olmadan yapılmadı.
-Onaydan sonra sırayla:
-
-1. VM kayıt ve ağ ayarları doğrulanır.
-2. Oracle sürümü ve çalışan instance'lar salt-okunur komutlarla belirlenir.
-3. CDB/PDB listesi ve servis adları kontrol edilir.
-4. Her PDB içinde SH kullanıcısı, hesap durumu, nesne ve tablo satır sayıları
-   salt-okunur sorgularla envanterlenir.
-5. Herhangi bir schema silme, taşıma veya yükseltme işlemi ayrı onaya bırakılır.
+Eski VM'ler kapalı tutulmalı ve silinmemelidir. Proje çalışmaları ana `oracle`
+VM üzerindeki `cem` hesabında ve 26ai `FREEPDB1` içinde sürdürülmelidir. Eski
+ortamlardan veri kurtarma gereksinimi doğmadıkça ek inceleme yapılmasına ihtiyaç
+yoktur.
