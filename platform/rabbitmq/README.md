@@ -25,3 +25,16 @@ podman exec rabbitmq rabbitmqctl list_queues name messages consumers
 
 Kurulum doğrulamasında yönetim API'si üzerinden geçici bir kuyruk oluşturulur,
 mesaj yayınlanır, mesaj geri okunur ve geçici kuyruk silinir.
+
+## API entegrasyonu
+
+FastAPI içindeki `POST /api/v1/tasks` endpoint'i aşağıdaki görev türlerini
+kalıcı `university.tasks` kuyruğuna gönderir:
+
+- `grade-report`
+- `sales-forecast`
+- `student-risk-analysis`
+
+Kubernetes Deployment, bağlantı adresini `rabbitmq-connection` Secret
+nesnesindeki `url` anahtarından alır. Parola manifest veya GitHub deposunda
+tutulmaz.

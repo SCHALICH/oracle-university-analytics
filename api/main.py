@@ -2,8 +2,13 @@
 
 import json
 import os
+from typing import Literal
+from uuid import uuid4
 
-from fastapi import FastAPI
+import pika
+from fastapi import FastAPI, HTTPException, status
+from pika.exceptions import AMQPError
+from pydantic import BaseModel, Field
 from redis import Redis
 from redis.exceptions import RedisError
 
@@ -21,6 +26,23 @@ redis_client = Redis.from_url(
     socket_timeout=2,
 )
 
+rabbitmq_url = os.getenv(
+    "RABBITMQ_URL",
+    "amqp://guest:guest@rabbitmq:5672/%2F",
+)
+rabbitmq_queue = os.getenv("RABBITMQ_QUEUE", "university.tasks")
+
+
+class TaskRequest(BaseModel):
+    """Describe a background analytics task."""
+
+    task_type: Literal[
+        "grade-report",
+        "sales-forecast",
+        "student-risk-analysis",
+    ]
+    payload: dict[str, object] = Field(default_factory=dict)
+
 
 def project_payload() -> dict[str, object]:
     """Build the stable project description payload."""
@@ -34,6 +56,41 @@ def project_payload() -> dict[str, object]:
             "SARIMAX",
         ],
     }
+
+
+def publish_task(task: TaskRequest) -> str:
+    """Publish a durable analytics task to RabbitMQ."""
+    message_id = str(uuid4())
+    parameters = pika.URLParameters(rabbitmq_url)
+    parameters.socket_timeout = 3
+    parameters.blocked_connection_timeout = 3
+    parameters.connection_attempts = 1
+
+    connection = pika.BlockingConnection(parameters)
+    try:
+        channel = connection.channel()
+        channel.queue_declare(queue=rabbitmq_queue, durable=True)
+        channel.basic_publish(
+            exchange="",
+            routing_key=rabbitmq_queue,
+            body=json.dumps(
+                {
+                    "message_id": message_id,
+                    "task_type": task.task_type,
+                    "payload": task.payload,
+                }
+            ).encode(),
+            properties=pika.BasicProperties(
+                content_type="application/json",
+                delivery_mode=pika.DeliveryMode.Persistent,
+                message_id=message_id,
+            ),
+        )
+    finally:
+        if connection.is_open:
+            connection.close()
+
+    return message_id
 
 
 @app.get("/health", tags=["Operations"])
@@ -75,4 +132,26 @@ def platform() -> dict[str, list[str]]:
         "data_services": ["Redis", "RabbitMQ", "MinIO"],
         "observability": ["Prometheus", "Grafana", "Kibana", "Dynatrace"],
         "operations": ["IaC", "DR", "7/24 operations"],
+    }
+
+
+@app.post(
+    "/api/v1/tasks",
+    tags=["Tasks"],
+    status_code=status.HTTP_202_ACCEPTED,
+)
+def create_task(task: TaskRequest) -> dict[str, str]:
+    """Place an analytics task on the RabbitMQ work queue."""
+    try:
+        message_id = publish_task(task)
+    except AMQPError as error:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Task queue is temporarily unavailable",
+        ) from error
+
+    return {
+        "status": "queued",
+        "message_id": message_id,
+        "task_type": task.task_type,
     }

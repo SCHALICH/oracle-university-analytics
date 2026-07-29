@@ -1,6 +1,7 @@
 import json
 
 from fastapi.testclient import TestClient
+from pika.exceptions import AMQPConnectionError
 from redis.exceptions import RedisError
 
 import main
@@ -68,3 +69,42 @@ def test_api_remains_available_when_redis_is_down(monkeypatch):
     assert health_response.json()["redis"] == "unavailable"
     assert project_response.status_code == 200
     assert project_response.json()["cache"] == "unavailable"
+
+
+def test_task_is_published_to_rabbitmq(monkeypatch):
+    monkeypatch.setattr(main, "publish_task", lambda _task: "message-123")
+
+    response = client.post(
+        "/api/v1/tasks",
+        json={
+            "task_type": "sales-forecast",
+            "payload": {"months": 3},
+        },
+    )
+
+    assert response.status_code == 202
+    assert response.json() == {
+        "status": "queued",
+        "message_id": "message-123",
+        "task_type": "sales-forecast",
+    }
+
+
+def test_task_endpoint_reports_rabbitmq_outage(monkeypatch):
+    def unavailable(_task):
+        raise AMQPConnectionError("RabbitMQ is unavailable")
+
+    monkeypatch.setattr(main, "publish_task", unavailable)
+
+    response = client.post(
+        "/api/v1/tasks",
+        json={
+            "task_type": "grade-report",
+            "payload": {},
+        },
+    )
+
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": "Task queue is temporarily unavailable",
+    }
