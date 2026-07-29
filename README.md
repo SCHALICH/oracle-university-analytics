@@ -27,6 +27,7 @@ akademik raporlama ve öğrenci başarı analitiği projesidir.
 ```text
 oracle-university-analytics/
 ├── database/                              # DDL, örnek veri ve SQL raporları
+├── api/                                   # FastAPI REST servisi ve Containerfile
 ├── docs/                                  # Tasarım dokümanları
 ├── oracle-university-python-analytics/    # Python modelleme çalışması
 ├── sh-sales-analytics/                    # SH satış/ML analitiği

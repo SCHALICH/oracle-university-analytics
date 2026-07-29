@@ -50,3 +50,16 @@ dışa aktarımıyla modeller yeniden çalıştırılmıştır. Ayrıntılı kay
   paketi tamamlandı.
 
 Yeni bir kapsam eklenmedikçe yol haritasındaki zorunlu iş kalmamıştır.
+
+## Kurumsal platform aşaması
+
+İkinci çalışma fazı başlatılmıştır:
+
+- Ayrı `DevOps-Lab` Oracle Linux 9 VM kuruldu.
+- Rootless Podman çalışma ortamı kuruldu ve doğrulandı.
+- FastAPI tabanlı ilk REST API geliştirildi.
+- API container imajı oluşturuldu ve sağlık kontrolüyle çalıştırıldı.
+- Windows üzerinden `http://127.0.0.1:8000` erişimi doğrulandı.
+- Container için yeniden başlatma politikası etkinleştirildi.
+
+Sonraki adımlar: Nginx, Redis, CI/CD, SonarQube ve Kubernetes.
