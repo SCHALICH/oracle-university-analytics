@@ -1,5 +1,8 @@
 FROM docker.io/library/nginx:1.28-alpine
 
+LABEL org.opencontainers.image.source="https://github.com/SCHALICH/oracle-university-analytics" \
+      org.opencontainers.image.description="Oracle University Analytics Nginx gateway"
+
 COPY nginx.conf /etc/nginx/nginx.conf
 
 EXPOSE 8080

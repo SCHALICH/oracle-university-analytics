@@ -61,3 +61,52 @@ jobs:
 
       - name: Build Nginx image
         run: docker build --file platform/nginx/Containerfile --tag oracle-university-nginx:ci platform/nginx
+
+  publish-images:
+    name: Publish ${{ matrix.name }}
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: [api-tests, container-build]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          - name: API image
+            image: oracle-university-api
+            context: api
+            file: api/Containerfile
+          - name: Nginx image
+            image: oracle-university-nginx
+            context: platform/nginx
+            file: platform/nginx/Containerfile
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract image metadata
+        id: metadata
+        uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/${{ matrix.image }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=long
+
+      - name: Build and publish image
+        uses: docker/build-push-action@3b5e8027fcad23fda98b2e3ac259d8d67585f671
+        with:
+          context: ${{ matrix.context }}
+          file: ${{ matrix.file }}
+          push: true
+          tags: ${{ steps.metadata.outputs.tags }}
+          labels: ${{ steps.metadata.outputs.labels }}

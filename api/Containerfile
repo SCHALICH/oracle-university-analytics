@@ -1,5 +1,8 @@
 FROM docker.io/library/python:3.12-slim
 
+LABEL org.opencontainers.image.source="https://github.com/SCHALICH/oracle-university-analytics" \
+      org.opencontainers.image.description="Oracle University Analytics FastAPI service"
+
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 

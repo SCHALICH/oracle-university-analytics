@@ -84,6 +84,8 @@ Yeni bir kapsam eklenmedikçe yol haritasındaki zorunlu iş kalmamıştır.
   yetkisiz kullanıcı güvenlik ayarları eklendi.
 - Kubernetes sürümüne Windows `127.0.0.1:8081` üzerinden erişim doğrulandı.
 - Kubernetes üzerinde Redis önbelleğinin `miss` ve `hit` davranışı doğrulandı.
+- CI başarılı olduğunda API ve Nginx imajlarını GitHub Container Registry'ye
+  `latest` ve commit SHA etiketleriyle yayımlayan hat eklendi.
 
-Sonraki adımlar: otomatik dağıtım, container registry ve test kapsamını analitik
+Sonraki adımlar: otomatik Kubernetes dağıtımı ve test kapsamını analitik
 modüllere genişletme.
