@@ -71,5 +71,11 @@ Yeni bir kapsam eklenmedikçe yol haritasındaki zorunlu iş kalmamıştır.
 - GitHub Actions CI hattı eklendi.
 - API birim testleri, Python derleme kontrolü ve API/Nginx container imajı
   derlemeleri her gönderim ve pull request için otomatikleştirildi.
+- SonarQube Community Build ve PostgreSQL kalıcı volume'larla DevOps-Lab
+  ortamına kuruldu.
+- SonarQube için zorunlu Linux çekirdek ayarları kalıcılaştırıldı.
+- Proje SonarQube'a kaydedildi ve resmî SonarScanner container'ıyla analiz edildi.
+- İlk kalite kapısı `OK`; 0 bug, 0 vulnerability ve 4 code smell sonucu alındı.
 
-Sonraki adımlar: SonarQube, Kubernetes ve otomatik dağıtım.
+Sonraki adımlar: Kubernetes, otomatik dağıtım ve test kapsamını analitik
+modüllere genişletme.
