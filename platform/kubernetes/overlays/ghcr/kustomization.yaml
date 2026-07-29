@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+images:
+  - name: localhost/oracle-university-api
+    newName: ghcr.io/schalich/oracle-university-api
+    newTag: latest
+  - name: localhost/oracle-university-nginx
+    newName: ghcr.io/schalich/oracle-university-nginx
+    newTag: latest
+
+patches:
+  - path: pull-policy.yaml
