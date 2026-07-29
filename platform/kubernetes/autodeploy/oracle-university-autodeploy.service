@@ -1,0 +1,9 @@
+[Unit]
+Description=Deploy latest Oracle University images to K3s
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+ExecStart=%h/.local/bin/oracle-university-autodeploy

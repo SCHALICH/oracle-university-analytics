@@ -51,3 +51,21 @@ kubectl rollout status deployment/oracle-university-nginx -n university-platform
 Bu katman, temel geliştirme kurulumunu değiştirmez. Yalnızca API ve Nginx imaj
 adreslerini `ghcr.io/schalich/...:latest` olarak ve çekme politikasını `Always`
 olarak değiştirir.
+
+## Otomatik dağıtım
+
+`autodeploy/deploy-latest.sh`, GHCR üzerindeki `latest` etiketlerinin değişmez
+digest değerlerini kontrol eder. Çalışan Deployment farklı bir digest
+kullanıyorsa yalnızca o bileşeni günceller, rollout sonucunu bekler ve Nginx
+üzerinden sağlık kontrolü yapar.
+
+Sanal makinedeki kullanıcı servisi ve zamanlayıcısı iki dakikada bir çalışır:
+
+```bash
+systemctl --user status oracle-university-autodeploy.timer
+systemctl --user list-timers oracle-university-autodeploy.timer
+journalctl --user -u oracle-university-autodeploy.service
+```
+
+Bu pull tabanlı yöntem, public GitHub deposuna yetkili bir self-hosted runner
+bağlamadan otomatik dağıtım sağlar.

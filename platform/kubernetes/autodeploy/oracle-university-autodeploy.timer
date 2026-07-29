@@ -1,0 +1,12 @@
+[Unit]
+Description=Check GHCR for Oracle University releases
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=2min
+Persistent=true
+RandomizedDelaySec=15s
+Unit=oracle-university-autodeploy.service
+
+[Install]
+WantedBy=timers.target
