@@ -30,6 +30,7 @@ oracle-university-analytics/
 ├── api/                                   # FastAPI REST servisi ve Containerfile
 ├── docs/                                  # Tasarım dokümanları
 ├── oracle-university-python-analytics/    # Python modelleme çalışması
+├── platform/                              # Nginx ve sonraki platform bileşenleri
 ├── sh-sales-analytics/                    # SH satış/ML analitiği
 ├── README.md
 └── ROADMAP.md

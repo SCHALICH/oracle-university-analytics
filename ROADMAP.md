@@ -61,5 +61,8 @@ Yeni bir kapsam eklenmedikçe yol haritasındaki zorunlu iş kalmamıştır.
 - API container imajı oluşturuldu ve sağlık kontrolüyle çalıştırıldı.
 - Windows üzerinden `http://127.0.0.1:8000` erişimi doğrulandı.
 - Container için yeniden başlatma politikası etkinleştirildi.
+- Nginx ters proxy container'ı kuruldu ve sağlık kontrolü doğrulandı.
+- Nginx ile FastAPI özel Podman ağı üzerinden birbirine bağlandı.
+- Doğrudan API erişimi kapatıldı; dış erişim Nginx `8080` portuna taşındı.
 
-Sonraki adımlar: Nginx, Redis, CI/CD, SonarQube ve Kubernetes.
+Sonraki adımlar: Redis, CI/CD, SonarQube ve Kubernetes.
