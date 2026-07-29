@@ -40,7 +40,13 @@ jobs:
         run: python -m compileall -q main.py test_main.py
 
       - name: Run tests
-        run: pytest -q
+        run: pytest -q --cov=main --cov-report=term-missing --cov-report=xml:coverage.xml
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-coverage
+          path: api/coverage.xml
 
   container-build:
     name: Container build

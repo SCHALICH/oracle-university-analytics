@@ -5,6 +5,8 @@ __pycache__/
 .venv-*/
 venv/
 .env
+.coverage
+coverage.xml
 oracle-university-python-analytics/models/*.joblib
 oracle-university-python-analytics/models/*_metrics.json
 sh-sales-analytics/.venv/
