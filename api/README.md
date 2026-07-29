@@ -23,3 +23,14 @@ eklenecektir.
 
 `GET /api/v1/project` yanıtı Redis içinde beş dakika tutulur. Yanıttaki
 `cache` alanı ilk istekte `miss`, sonraki istekte `hit` değerini gösterir.
+
+## Test
+
+```bash
+python -m pip install --requirement requirements-dev.txt
+pytest -q
+```
+
+Her `main` dalı gönderiminde ve pull request işleminde GitHub Actions; API
+testlerini, Python derleme kontrolünü ve API/Nginx container imajı derlemelerini
+otomatik çalıştırır.

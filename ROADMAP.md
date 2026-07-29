@@ -68,5 +68,8 @@ Yeni bir kapsam eklenmedikçe yol haritasındaki zorunlu iş kalmamıştır.
 - Redis verileri kalıcı `redis-data` volume üzerinde saklandı ve dışarıya port açılmadı.
 - FastAPI sağlık kontrolü Redis durumunu gösterecek şekilde genişletildi.
 - Proje uç noktasında ilk isteğin `miss`, sonraki isteğin `hit` verdiği doğrulandı.
+- GitHub Actions CI hattı eklendi.
+- API birim testleri, Python derleme kontrolü ve API/Nginx container imajı
+  derlemeleri her gönderim ve pull request için otomatikleştirildi.
 
-Sonraki adımlar: CI/CD, SonarQube ve Kubernetes.
+Sonraki adımlar: SonarQube, Kubernetes ve otomatik dağıtım.
