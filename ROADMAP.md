@@ -64,5 +64,9 @@ Yeni bir kapsam eklenmedikçe yol haritasındaki zorunlu iş kalmamıştır.
 - Nginx ters proxy container'ı kuruldu ve sağlık kontrolü doğrulandı.
 - Nginx ile FastAPI özel Podman ağı üzerinden birbirine bağlandı.
 - Doğrudan API erişimi kapatıldı; dış erişim Nginx `8080` portuna taşındı.
+- Redis 7.4 önbellek servisi özel Podman ağına eklendi.
+- Redis verileri kalıcı `redis-data` volume üzerinde saklandı ve dışarıya port açılmadı.
+- FastAPI sağlık kontrolü Redis durumunu gösterecek şekilde genişletildi.
+- Proje uç noktasında ilk isteğin `miss`, sonraki isteğin `hit` verdiği doğrulandı.
 
-Sonraki adımlar: Redis, CI/CD, SonarQube ve Kubernetes.
+Sonraki adımlar: CI/CD, SonarQube ve Kubernetes.

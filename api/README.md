@@ -20,3 +20,6 @@ podman run --rm -p 8000:8000 oracle-university-api:1.0
 İlk sürüm veritabanından bağımsız bir sağlık ve proje tanıtım katmanıdır.
 Oracle bağlantısı sonraki aşamada ortam değişkenleri ve Vault entegrasyonuyla
 eklenecektir.
+
+`GET /api/v1/project` yanıtı Redis içinde beş dakika tutulur. Yanıttaki
+`cache` alanı ilk istekte `miss`, sonraki istekte `hit` değerini gösterir.
