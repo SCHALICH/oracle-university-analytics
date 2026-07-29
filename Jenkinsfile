@@ -18,7 +18,12 @@ pipeline {
                     sh '''
                         python3 -m venv .venv
                         . .venv/bin/activate
-                        python -m pip install --disable-pip-version-check --requirement requirements-dev.txt
+                        python -m pip install \
+                          --disable-pip-version-check \
+                          --retries 10 \
+                          --resume-retries 10 \
+                          --timeout 60 \
+                          --requirement requirements-dev.txt
                         python -m compileall -q main.py test_main.py
                         pytest -q \
                           --junitxml=test-results.xml \
