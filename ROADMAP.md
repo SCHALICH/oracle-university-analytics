@@ -76,6 +76,14 @@ Yeni bir kapsam eklenmedikçe yol haritasındaki zorunlu iş kalmamıştır.
 - SonarQube için zorunlu Linux çekirdek ayarları kalıcılaştırıldı.
 - Proje SonarQube'a kaydedildi ve resmî SonarScanner container'ıyla analiz edildi.
 - İlk kalite kapısı `OK`; 0 bug, 0 vulnerability ve 4 code smell sonucu alındı.
+- DevOps-Lab üzerine SELinux destekli tek düğümlü K3s kümesi kuruldu.
+- Kubernetes düğümü, CoreDNS ve local-path kalıcı depolama doğrulandı.
+- Redis, FastAPI ve Nginx Kubernetes üzerinde ayrı Deployment/Service
+  kaynaklarıyla çalıştırıldı.
+- Redis için 1 GiB kalıcı disk, pod sağlık kontrolleri, kaynak sınırları ve
+  yetkisiz kullanıcı güvenlik ayarları eklendi.
+- Kubernetes sürümüne Windows `127.0.0.1:8081` üzerinden erişim doğrulandı.
+- Kubernetes üzerinde Redis önbelleğinin `miss` ve `hit` davranışı doğrulandı.
 
-Sonraki adımlar: Kubernetes, otomatik dağıtım ve test kapsamını analitik
+Sonraki adımlar: otomatik dağıtım, container registry ve test kapsamını analitik
 modüllere genişletme.
