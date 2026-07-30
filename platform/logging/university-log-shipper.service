@@ -5,4 +5,3 @@ After=network-online.target
 [Service]
 Type=oneshot
 ExecStart=/usr/bin/python3 %h/university-platform/logging/ship_logs.py
-
