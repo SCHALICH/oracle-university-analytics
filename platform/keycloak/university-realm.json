@@ -1,0 +1,49 @@
+{
+  "realm": "university",
+  "enabled": true,
+  "displayName": "Oracle University Analytics",
+  "registrationAllowed": false,
+  "resetPasswordAllowed": true,
+  "loginWithEmailAllowed": true,
+  "roles": {
+    "realm": [
+      {
+        "name": "student",
+        "description": "Can view personal courses, grades and reports"
+      },
+      {
+        "name": "instructor",
+        "description": "Can manage course and assessment information"
+      },
+      {
+        "name": "university-admin",
+        "description": "Can manage university application data and access"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "university-api",
+      "name": "Oracle University API",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://127.0.0.1:8081/*"
+      ],
+      "webOrigins": [
+        "http://127.0.0.1:8081"
+      ],
+      "defaultClientScopes": [
+        "web-origins",
+        "acr",
+        "profile",
+        "roles",
+        "basic",
+        "email"
+      ]
+    }
+  ]
+}
