@@ -1,0 +1,29 @@
+groups:
+  - name: university-platform
+    rules:
+      - alert: TargetDown
+        expr: up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Monitoring target is unavailable"
+          description: "{{ $labels.job }} target {{ $labels.instance }} has been down for two minutes."
+
+      - alert: HostMemoryLow
+        expr: node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes < 0.15
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "DevOps-Lab available memory is low"
+          description: "Available memory has remained below 15 percent for five minutes."
+
+      - alert: HostDiskSpaceLow
+        expr: node_filesystem_avail_bytes{mountpoint="/"} / node_filesystem_size_bytes{mountpoint="/"} < 0.15
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "DevOps-Lab root disk space is low"
+          description: "Available root filesystem space has remained below 15 percent."
