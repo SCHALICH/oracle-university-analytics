@@ -7,7 +7,11 @@ from typing import Literal
 from uuid import uuid4
 
 import pika
-from fastapi import FastAPI, HTTPException, status
+import jwt
+from fastapi import Depends, FastAPI, HTTPException, status
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
+from jwt import PyJWKClient
+from jwt.exceptions import PyJWTError
 from minio import Minio
 from minio.error import S3Error
 from pika.exceptions import AMQPError
@@ -41,6 +45,17 @@ minio_client = Minio(
     secret_key=os.getenv("MINIO_SECRET_KEY", "minioadmin"),
     secure=os.getenv("MINIO_SECURE", "false").lower() == "true",
 )
+keycloak_issuer = os.getenv(
+    "KEYCLOAK_ISSUER",
+    "http://127.0.0.1:8180/realms/university",
+)
+keycloak_jwks_url = os.getenv(
+    "KEYCLOAK_JWKS_URL",
+    f"{keycloak_issuer}/protocol/openid-connect/certs",
+)
+keycloak_client_id = os.getenv("KEYCLOAK_CLIENT_ID", "university-api")
+jwks_client = PyJWKClient(keycloak_jwks_url, cache_keys=True)
+bearer_scheme = HTTPBearer(auto_error=False)
 
 
 class TaskRequest(BaseModel):
@@ -64,6 +79,61 @@ class ReportRequest(BaseModel):
     )
     content: str = Field(min_length=1, max_length=1_000_000)
     content_type: str = Field(default="text/plain", max_length=100)
+
+
+def decode_access_token(token: str) -> dict[str, object]:
+    """Validate a Keycloak access token and return its claims."""
+    signing_key = jwks_client.get_signing_key_from_jwt(token)
+    claims = jwt.decode(
+        token,
+        signing_key.key,
+        algorithms=["RS256"],
+        issuer=keycloak_issuer,
+        options={"verify_aud": False},
+    )
+    if claims.get("azp") != keycloak_client_id:
+        raise jwt.InvalidAudienceError("Unexpected authorized party")
+    return claims
+
+
+def current_user(
+    credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
+) -> dict[str, object]:
+    """Return validated identity information from a bearer token."""
+    if credentials is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Authentication is required",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    try:
+        claims = decode_access_token(credentials.credentials)
+    except PyJWTError as error:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired access token",
+            headers={"WWW-Authenticate": "Bearer"},
+        ) from error
+
+    realm_access = claims.get("realm_access", {})
+    roles = realm_access.get("roles", []) if isinstance(realm_access, dict) else []
+    return {
+        "username": claims.get("preferred_username", claims.get("sub")),
+        "email": claims.get("email"),
+        "roles": roles,
+    }
+
+
+def university_admin(
+    user: dict[str, object] = Depends(current_user),
+) -> dict[str, object]:
+    """Require the university administrator realm role."""
+    if "university-admin" not in user["roles"]:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="University administrator role is required",
+        )
+    return user
 
 
 def project_payload() -> dict[str, object]:
@@ -171,6 +241,24 @@ def platform() -> dict[str, list[str]]:
         "data_services": ["Redis", "RabbitMQ", "MinIO"],
         "observability": ["Prometheus", "Grafana", "Kibana", "Dynatrace"],
         "operations": ["IaC", "DR", "7/24 operations"],
+    }
+
+
+@app.get("/api/v1/me", tags=["Identity"])
+def me(user: dict[str, object] = Depends(current_user)) -> dict[str, object]:
+    """Return the authenticated university identity."""
+    return user
+
+
+@app.get("/api/v1/admin/status", tags=["Identity"])
+def admin_status(
+    user: dict[str, object] = Depends(university_admin),
+) -> dict[str, object]:
+    """Return an administrator-only platform response."""
+    return {
+        "status": "authorized",
+        "username": user["username"],
+        "role": "university-admin",
     }
 
 

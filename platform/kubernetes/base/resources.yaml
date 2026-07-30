@@ -123,6 +123,12 @@ spec:
               value: "false"
             - name: MINIO_BUCKET
               value: university-reports
+            - name: KEYCLOAK_ISSUER
+              value: http://127.0.0.1:8180/realms/university
+            - name: KEYCLOAK_JWKS_URL
+              value: http://10.0.2.15:8180/realms/university/protocol/openid-connect/certs
+            - name: KEYCLOAK_CLIENT_ID
+              value: university-api
           ports:
             - name: http
               containerPort: 8000

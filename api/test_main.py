@@ -160,3 +160,75 @@ def test_report_endpoint_reports_minio_outage(monkeypatch):
     assert response.json() == {
         "detail": "Report storage is temporarily unavailable",
     }
+
+
+def test_identity_endpoint_requires_bearer_token():
+    response = client.get("/api/v1/me")
+
+    assert response.status_code == 401
+    assert response.json() == {"detail": "Authentication is required"}
+
+
+def test_identity_endpoint_returns_keycloak_user(monkeypatch):
+    monkeypatch.setattr(
+        main,
+        "decode_access_token",
+        lambda _token: {
+            "preferred_username": "demo-student",
+            "email": "demo-student@university.local",
+            "realm_access": {"roles": ["student"]},
+        },
+    )
+
+    response = client.get(
+        "/api/v1/me",
+        headers={"Authorization": "Bearer valid-token"},
+    )
+
+    assert response.status_code == 200
+    assert response.json()["username"] == "demo-student"
+    assert response.json()["roles"] == ["student"]
+
+
+def test_admin_endpoint_rejects_student_role(monkeypatch):
+    monkeypatch.setattr(
+        main,
+        "decode_access_token",
+        lambda _token: {
+            "preferred_username": "demo-student",
+            "realm_access": {"roles": ["student"]},
+        },
+    )
+
+    response = client.get(
+        "/api/v1/admin/status",
+        headers={"Authorization": "Bearer valid-token"},
+    )
+
+    assert response.status_code == 403
+    assert response.json() == {
+        "detail": "University administrator role is required",
+    }
+
+
+def test_admin_endpoint_accepts_administrator_role(monkeypatch):
+    monkeypatch.setattr(
+        main,
+        "decode_access_token",
+        lambda _token: {
+            "preferred_username": "demo-admin",
+            "realm_access": {"roles": ["university-admin"]},
+        },
+    )
+
+    response = client.get(
+        "/api/v1/admin/status",
+        headers={"Authorization": "Bearer valid-token"},
+    )
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "status": "authorized",
+        "username": "demo-admin",
+        "role": "university-admin",
+    }
