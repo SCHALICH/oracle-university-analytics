@@ -104,6 +104,25 @@ spec:
                   key: url
             - name: RABBITMQ_QUEUE
               value: university.tasks
+            - name: MINIO_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: minio-connection
+                  key: endpoint
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-connection
+                  key: access_key
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-connection
+                  key: secret_key
+            - name: MINIO_SECURE
+              value: "false"
+            - name: MINIO_BUCKET
+              value: university-reports
           ports:
             - name: http
               containerPort: 8000

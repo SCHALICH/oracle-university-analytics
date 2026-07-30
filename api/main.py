@@ -2,11 +2,14 @@
 
 import json
 import os
+from io import BytesIO
 from typing import Literal
 from uuid import uuid4
 
 import pika
 from fastapi import FastAPI, HTTPException, status
+from minio import Minio
+from minio.error import S3Error
 from pika.exceptions import AMQPError
 from pydantic import BaseModel, Field
 from redis import Redis
@@ -31,6 +34,13 @@ rabbitmq_url = os.getenv(
     "amqp://guest:guest@rabbitmq:5672/%2F",
 )
 rabbitmq_queue = os.getenv("RABBITMQ_QUEUE", "university.tasks")
+minio_bucket = os.getenv("MINIO_BUCKET", "university-reports")
+minio_client = Minio(
+    os.getenv("MINIO_ENDPOINT", "minio:9000"),
+    access_key=os.getenv("MINIO_ACCESS_KEY", "minioadmin"),
+    secret_key=os.getenv("MINIO_SECRET_KEY", "minioadmin"),
+    secure=os.getenv("MINIO_SECURE", "false").lower() == "true",
+)
 
 
 class TaskRequest(BaseModel):
@@ -42,6 +52,18 @@ class TaskRequest(BaseModel):
         "student-risk-analysis",
     ]
     payload: dict[str, object] = Field(default_factory=dict)
+
+
+class ReportRequest(BaseModel):
+    """Describe a text report stored in object storage."""
+
+    filename: str = Field(
+        min_length=1,
+        max_length=128,
+        pattern=r"^[A-Za-z0-9][A-Za-z0-9._-]*$",
+    )
+    content: str = Field(min_length=1, max_length=1_000_000)
+    content_type: str = Field(default="text/plain", max_length=100)
 
 
 def project_payload() -> dict[str, object]:
@@ -91,6 +113,23 @@ def publish_task(task: TaskRequest) -> str:
             connection.close()
 
     return message_id
+
+
+def store_report(report: ReportRequest) -> str:
+    """Store a report in the configured MinIO bucket."""
+    if not minio_client.bucket_exists(minio_bucket):
+        minio_client.make_bucket(minio_bucket)
+
+    object_name = f"{uuid4()}-{report.filename}"
+    report_bytes = report.content.encode()
+    minio_client.put_object(
+        minio_bucket,
+        object_name,
+        BytesIO(report_bytes),
+        length=len(report_bytes),
+        content_type=report.content_type,
+    )
+    return object_name
 
 
 @app.get("/health", tags=["Operations"])
@@ -154,4 +193,26 @@ def create_task(task: TaskRequest) -> dict[str, str]:
         "status": "queued",
         "message_id": message_id,
         "task_type": task.task_type,
+    }
+
+
+@app.post(
+    "/api/v1/reports",
+    tags=["Reports"],
+    status_code=status.HTTP_201_CREATED,
+)
+def create_report(report: ReportRequest) -> dict[str, str]:
+    """Store an analytics report in MinIO."""
+    try:
+        object_name = store_report(report)
+    except S3Error as error:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail="Report storage is temporarily unavailable",
+        ) from error
+
+    return {
+        "status": "stored",
+        "bucket": minio_bucket,
+        "object_name": object_name,
     }

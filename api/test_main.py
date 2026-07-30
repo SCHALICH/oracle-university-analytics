@@ -1,6 +1,7 @@
 import json
 
 from fastapi.testclient import TestClient
+from minio.error import S3Error
 from pika.exceptions import AMQPConnectionError
 from redis.exceptions import RedisError
 
@@ -107,4 +108,55 @@ def test_task_endpoint_reports_rabbitmq_outage(monkeypatch):
     assert response.status_code == 503
     assert response.json() == {
         "detail": "Task queue is temporarily unavailable",
+    }
+
+
+def test_report_is_stored_in_minio(monkeypatch):
+    monkeypatch.setattr(
+        main,
+        "store_report",
+        lambda _report: "report-id-analysis.md",
+    )
+
+    response = client.post(
+        "/api/v1/reports",
+        json={
+            "filename": "analysis.md",
+            "content": "# University report",
+            "content_type": "text/markdown",
+        },
+    )
+
+    assert response.status_code == 201
+    assert response.json() == {
+        "status": "stored",
+        "bucket": "university-reports",
+        "object_name": "report-id-analysis.md",
+    }
+
+
+def test_report_endpoint_reports_minio_outage(monkeypatch):
+    def unavailable(_report):
+        raise S3Error(
+            code="ServiceUnavailable",
+            message="MinIO is unavailable",
+            resource=None,
+            request_id=None,
+            host_id=None,
+            response=None,
+        )
+
+    monkeypatch.setattr(main, "store_report", unavailable)
+
+    response = client.post(
+        "/api/v1/reports",
+        json={
+            "filename": "analysis.txt",
+            "content": "University report",
+        },
+    )
+
+    assert response.status_code == 503
+    assert response.json() == {
+        "detail": "Report storage is temporarily unavailable",
     }
