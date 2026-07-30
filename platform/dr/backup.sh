@@ -53,4 +53,3 @@ tar -C "${backup_root}" -czf "${archive}" "$(basename "${work_dir}")"
 chmod 600 "${archive}"
 
 echo "${archive}"
-

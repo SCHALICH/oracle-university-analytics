@@ -19,4 +19,3 @@ test -f "${backup_dir}/elasticsearch/university-logs.ndjson"
 )
 
 echo "Backup verification successful: ${archive}"
-
