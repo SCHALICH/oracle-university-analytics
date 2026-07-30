@@ -14,6 +14,7 @@ SOURCES = {
     "kong-gateway": ["podman", "logs", "--since", "65s", "kong-gateway"],
     "university-api": [
         "kubectl",
+        "--request-timeout=5s",
         "logs",
         "-n",
         "university-platform",
@@ -22,6 +23,7 @@ SOURCES = {
     ],
     "university-nginx": [
         "kubectl",
+        "--request-timeout=5s",
         "logs",
         "-n",
         "university-platform",
@@ -36,7 +38,7 @@ def recent_lines(command: list[str]) -> list[str]:
         command,
         capture_output=True,
         text=True,
-        timeout=30,
+        timeout=10,
         check=False,
     )
     output = "\n".join(part for part in (result.stdout, result.stderr) if part)
